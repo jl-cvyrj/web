@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chat</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Чат</h1>
+  <p id="status" class="status-off"></p>
+  <div class="form-group">
+    <input id="name" placeholder="Тваё імя">
+    <button class="nav-btn" onclick="register()">Увайсці</button>
+  </div>
+
+  <ul id="messages"></ul>
+
+  <div class="chat-input">
+    <input id="msg" placeholder="Паведамленне">
+    <button class="nav-btn" onclick="send()">Адправіць</button>
+  </div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+
+  function react(id, emoji) {
+    socket.emit('reaction', { messageId: id, emoji });
+  }
+
+  function register() {
+    const name = document.getElementById('name').value;
+
+    if (!name) return alert("Увядзі імя");
+
+    socket.emit('register', name);
+
+    const status = document.getElementById('status');
+    status.innerText = "Ты ўвайшоў як: " + name;
+
+    status.classList.remove("status-off");
+    status.classList.add("status-on");
+  }
+
+  function send() {
+    const msg = document.getElementById('msg');
+    if (!msg.value) return;
+
+    socket.emit('sendMessage', msg.value);
+    msg.value = '';
+  }
+
+  function updateReactionStyles(messages) {
+    const buttons = document.querySelectorAll(".react-btn");
+
+    buttons.forEach(btn => {
+      const id = Number(btn.dataset.id);
+      const emoji = btn.dataset.emoji;
+
+      const msg = messages.find(m => m.id === id);
+      if (!msg) return;
+
+      if (msg.reactions && msg.reactions[emoji] > 0) {
+        btn.style.background = "#ffd4ee";
+        btn.style.border = "2px solid #7f004d";
+      } else {
+        btn.style.background = "";
+        btn.style.border = "";
+      }
+    });
+  }
+
+  socket.on("connect", () => {
+    document.getElementById('status').innerText =
+      "Не аўтарызаваны";
+  });
+
+  socket.on("messagesUpdate", (messages) => {
+    const list = document.getElementById("messages");
+    list.innerHTML = "";
+
+    messages.forEach(msg => {
+      const li = document.createElement("li");
+
+      li.innerHTML = `
+        <b>${msg.name}</b>: ${msg.text}
+        <div>
+          <button class="react-btn" data-id="${msg.id}" data-emoji="👍">
+            👍 ${msg.reactions["👍"]}
+          </button>
+
+          <button class="react-btn" data-id="${msg.id}" data-emoji="❤️">
+            ❤️ ${msg.reactions["❤️"]}
+          </button>
+
+          <button class="react-btn" data-id="${msg.id}" data-emoji="😂">
+            😂 ${msg.reactions["😂"]}
+          </button>
+        </div>
+      `;
+
+      list.appendChild(li);
+    });
+
+    updateReactionStyles(messages);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("react-btn")) {
+      const id = Number(e.target.dataset.id);
+      const emoji = e.target.dataset.emoji;
+
+      socket.emit("reaction", { messageId: id, emoji });
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+  const status = document.getElementById('status');
+
+  status.innerText = "Не аўтарызаваны";
+  status.classList.add("status-off");
+});
+
+</script>
+
+</body>
+</html>

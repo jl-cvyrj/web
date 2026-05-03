@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Дадаць трэніроўку</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="container">
+  <h1>➕ Дадаць трэніроўку</h1>
+
+  <form action="/add" method="POST" class="form">
+    <div class="form-group">
+      <label>Назва трэніроўкі:</label>
+      <input type="text" name="name" placeholder="Трэніроўка" required>
+    </div>
+
+    <div class="form-group">
+      <label>Апісанне:</label>
+      <textarea name="description" placeholder="Апішыце трэніроўку..." rows="3" required></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="save-btn">Захаваць</button>
+      <button type="button" class="cancel-btn" onclick="location.href='/'">Адмяніць</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

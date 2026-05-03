@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Fitness App</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Фітнэс клуб</h1>
+
+  <div class="nav-buttons">
+    <a href="/add" class="nav-btn">Дадаць трэніроўку</a>
+    <button onclick="loadItems(1, true)" class="nav-btn">Паказаць усе</button>
+    <input type="text" id="search" placeholder="Пошук...">
+
+    <select id="sort">
+      <option value="">Без сартыроўкі</option>
+      <option value="asc">A → Я</option>
+      <option value="desc">Я → A</option>
+    </select>
+
+<div id="pagination"></div>
+  </div>
+
+    <a href="/chat">Перайсці ў чат</a>
+
+  <h3>Спіс трэніровак</h3>
+  <ul id="list">
+    <li>Націсніце кнопку, каб паказаць спіс</li>
+  </ul>
+
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
